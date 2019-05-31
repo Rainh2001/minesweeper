@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>MineSweeper</title>
+        <link rel="stylesheet" href="style.css">
+        <script src="script.js"></script>
+    </head>
+    <body>
+        <div class="container">
+            <label for="5">5:</label>
+            <input checked type="radio" value="5" name="tiles">
+            <label for="10">10:</label>
+            <input type="radio" value="10" name="tiles">
+            <label for="20">20:</label>
+            <input type="radio" value="20" name="tiles">
+            <br>
+            <label for="bomb">Bombs:</label>
+            <input id="bomb-range" type="range" name="bomb" min="5" max="15">
+            <canvas></canvas>
+        </div>
+    </body>
+</html>
