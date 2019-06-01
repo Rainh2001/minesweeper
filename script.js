@@ -21,7 +21,12 @@ class Tile {
         ctx.fillRect(this.x, this.y, this.width, this.width);
         ctx.fillStyle = "#e5e5e5";
         let difference = 0.1;
-        ctx.fillRect(this.x + difference/2*this.width, this.y + difference/2*this.width, this.width*(1-difference), this.width*(1-difference));
+        ctx.fillRect(
+            this.x + difference/2*this.width, // x position
+            this.y + difference/2*this.width, // y position
+            this.width*(1-difference), // width
+            this.width*(1-difference) // height
+        );
         ctx.closePath();
     }
 }
@@ -33,17 +38,14 @@ window.onload = function(){
     canvas.setAttribute("height", 600);
 
     tile_radio = document.getElementsByName("tiles");
-    tile_radio.forEach(x => x.addEventListener("click", updateBoard));
 
     bomb_slider = document.getElementById("bomb-range");
-    bomb_slider.addEventListener("click", updateBoard);
 
     canvas.addEventListener("click", getCursor);
-    bomb_slider.value = bomb_slider.getAttribute("min");
-    bomb_slider.click();
 }
 
 function setupBoard(tiles, width){
+    board = [];
     for(let i = 0; i < tiles; i++){
         board.push([]);
         for(let j = 0; j < tiles; j++){
@@ -54,7 +56,6 @@ function setupBoard(tiles, width){
 }
 
 function updateBoard(){
-    board = [];
     for(let i = 0; i < tile_radio.length; i++){
         if(tile_radio[i].checked){
             var tiles = tile_radio[i].value;
@@ -71,14 +72,17 @@ function updateBoard(){
         while(!bombSet){
             let rand1 = Math.floor(Math.random()*tiles);
             let rand2 = Math.floor(Math.random()*tiles);
+
             if(!board[rand1][rand2].bomb){
                 for(let j = 0; j < 3; j++){
                     for(let x = 0; x < 3; x++){
-                        if(!(j === 1 && x === 1)){
-                            if(!(rand1-1 + j*tiles >= tiles || rand1-1 + j*tiles < 0)){
-                                if(!(rand2-1 + x >= tiles || rand2-1 + x < 0)){
-                                    if(!(board[rand1-1 + j*tiles][rand2-1 + x].bomb)){
-                                        board[rand1-1 + j*tiles][rand2-1 + x].value++;
+                        let posY = rand1-1 + j;
+                        let posX = rand2-1 + x;
+                        if(!(j === 1 && x === 1)){                 
+                            if(!(posY >= tiles || posY < 0)){
+                                if(!(posX >= tiles || posX < 0)){
+                                    if(!(board[posY][posX].bomb)){
+                                        board[posY][posX].value++;
                                     }
                                 }
                             }  
@@ -91,19 +95,6 @@ function updateBoard(){
             }
         }
     }
-
-    let valueArr = [];
-    let bombArr = [];
-    for(let i = 0; i < tiles; i++){
-        valueArr.push([]);
-        bombArr.push([]);
-        for(let j = 0; j < tiles; j++){
-            valueArr[i].push(board[i][j].value);
-            bombArr[i].push(board[i][j].bomb);
-        }
-    }
-    console.log(valueArr);
-    console.log(bombArr);
 }
 
 function getCursor(event){
