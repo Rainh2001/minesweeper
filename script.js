@@ -29,6 +29,12 @@ class Tile {
         );
         ctx.closePath();
     }
+    reveal(){
+
+    }
+    flag(){
+
+    }
 }
 
 window.onload = function(){
@@ -55,12 +61,20 @@ function setupBoard(tiles, width){
     }
 }
 
-function updateBoard(){
+function getTiles(){
     for(let i = 0; i < tile_radio.length; i++){
         if(tile_radio[i].checked){
-            var tiles = tile_radio[i].value;
+            return tile_radio[i].value;
         }
     }
+}
+
+function getTileWidth(){
+    return canvas.height/getTiles();
+}
+
+function updateBoard(){
+    let tiles = getTiles();
     bomb_slider.setAttribute("min", Math.round(Math.pow(tiles, 2)*0.2));
     bomb_slider.setAttribute("max", Math.round(Math.pow(tiles, 2)*0.6));
     let bombs = bomb_slider.value;
@@ -98,9 +112,14 @@ function updateBoard(){
 }
 
 function getCursor(event){
+    let width = getTileWidth();
     let pos = {
-        x: event.pageX - this.offsetLeft,
-        y: event.pageY - this.offsetTop
+        x: Math.floor((event.pageX - this.offsetLeft)/width),
+        y: Math.floor((event.pageY - this.offsetTop)/width)
     }
+    handleTileClick(pos);
+}
+
+function handleTileClick(pos){
     console.log(pos);
 }
