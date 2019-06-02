@@ -30,15 +30,35 @@ class Tile {
         ctx.closePath();
     }
     reveal(){
-
+        
     }
     flag(){
-
+        this.flagged = !this.flagged;
+        if(this.flagged){
+            let flagIcon = new Image();
+            let width = this.width;
+            let pos = {x:this.x, y:this.y};
+            flagIcon.src = "assets/flag.png";
+            flagIcon.onload = function(){
+                let difference = 0.1;
+                ctx.beginPath();
+                ctx.drawImage(flagIcon, 
+                    pos.x + difference/2*width, 
+                    pos.y + difference/2*width, 
+                    width*(1-difference), 
+                    width*(1-difference) 
+                );
+                ctx.closePath();
+            }
+        } else {
+            this.draw();
+        }
     }
 }
 
 window.onload = function(){
     canvas = document.querySelector("canvas");
+
     ctx = canvas.getContext("2d");
     canvas.setAttribute("width", 600);
     canvas.setAttribute("height", 600);
@@ -48,6 +68,11 @@ window.onload = function(){
     bomb_slider = document.getElementById("bomb-range");
 
     canvas.addEventListener("click", getCursor);
+    canvas.addEventListener("contextmenu", getCursor);
+
+    canvas.oncontextmenu = function(){
+        return false;
+    }
 }
 
 function setupBoard(tiles, width){
@@ -117,9 +142,22 @@ function getCursor(event){
         x: Math.floor((event.pageX - this.offsetLeft)/width),
         y: Math.floor((event.pageY - this.offsetTop)/width)
     }
-    handleTileClick(pos);
+    if(event.which){
+        if(event.which === 1){
+            revealTile(pos);
+        }else{
+            board[pos.y][pos.x].flag();
+        }
+    }else {
+        if(event.button === 0){
+            revealTile(pos);
+        }else{
+            board[pos.y][pos.x].flag();
+        }
+    }
 }
 
-function handleTileClick(pos){
-    console.log(pos);
+function revealTile(pos){
+    let tile = board[pos.y][pos.x];
+    
 }
